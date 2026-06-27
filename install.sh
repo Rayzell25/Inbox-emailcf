@@ -8,9 +8,10 @@
 #  This script will:
 #    1) apt update && apt upgrade
 #    2) install base packages (curl, git, nano, ca-certificates)
-#    3) install Docker Engine + Docker Compose plugin
-#    4) create .env from .env.example (if missing)
-#    5) build the app image and run it as a background container
+#    3) install Node.js + npm (for deploying the Email Worker)
+#    4) install Docker Engine + Docker Compose plugin
+#    5) create .env from .env.example (if missing)
+#    6) build the app image and run it as a background container
 #
 #  Re-running is safe (idempotent): already-installed steps are skipped.
 # =====================================================================
@@ -74,19 +75,44 @@ echo "${DIM}Direktori proyek: ${SCRIPT_DIR}${RESET}"
 echo
 
 # ---------- 1) update & upgrade ----------
-log "1/5 Memperbarui sistem (apt update & upgrade)"
+log "1/6 Memperbarui sistem (apt update & upgrade)"
 $SUDO apt-get update -y
 $SUDO apt-get upgrade -y
 ok "Sistem diperbarui"
 
 # ---------- 2) base packages ----------
-log "2/5 Memasang paket dasar (curl, git, nano, ca-certificates, gnupg)"
+log "2/6 Memasang paket dasar (curl, git, nano, ca-certificates, gnupg)"
 $SUDO apt-get install -y curl git nano ca-certificates gnupg lsb-release
 ok "Paket dasar terpasang"
 
-# ---------- 3) Docker + Compose ----------
+# ---------- 3) Node.js + npm ----------
+# Dibutuhkan untuk men-deploy Email Worker (npx wrangler) dari folder worker/.
+install_node() {
+  log "3/6 Memasang Node.js + npm (untuk deploy Email Worker)"
+  local need=1
+  if command -v node >/dev/null 2>&1; then
+    local major
+    major="$(node -v 2>/dev/null | sed -E 's/^v([0-9]+).*/\1/')"
+    if [ -n "${major:-}" ] && [ "$major" -ge 18 ]; then
+      need=0
+      ok "Node.js sudah terpasang ($(node -v), npm $(npm -v 2>/dev/null || echo '?'))"
+    else
+      warn "Node.js versi lama terdeteksi ($(node -v)); memasang Node 20."
+    fi
+  fi
+  if [ "$need" -eq 1 ]; then
+    curl -fsSL https://deb.nodesource.com/setup_20.x -o /tmp/nodesource_setup.sh
+    $SUDO bash /tmp/nodesource_setup.sh
+    rm -f /tmp/nodesource_setup.sh
+    $SUDO apt-get install -y nodejs
+    ok "Node.js terpasang ($(node -v 2>/dev/null || echo '?'), npm $(npm -v 2>/dev/null || echo '?'))"
+  fi
+}
+install_node
+
+# ---------- 4) Docker + Compose ----------
 install_docker() {
-  log "3/5 Memasang Docker Engine + Docker Compose"
+  log "4/6 Memasang Docker Engine + Docker Compose"
   if command -v docker >/dev/null 2>&1; then
     ok "Docker sudah terpasang ($(docker --version 2>/dev/null || echo 'versi tidak diketahui'))"
   else
@@ -135,7 +161,7 @@ if ! docker info >/dev/null 2>&1; then
 fi
 
 # ---------- 4) .env ----------
-log "4/5 Menyiapkan konfigurasi (.env)"
+log "5/6 Menyiapkan konfigurasi (.env)"
 if [ ! -f .env ]; then
   if [ -f .env.example ]; then
     cp .env.example .env
@@ -150,8 +176,8 @@ else
   NEW_ENV=0
 fi
 
-# ---------- 5) build & run ----------
-log "5/5 Build image & menjalankan container (background)"
+# ---------- 6) build & run ----------
+log "6/6 Build image & menjalankan container (background)"
 $COMPOSE up -d --build
 ok "Container berjalan"
 

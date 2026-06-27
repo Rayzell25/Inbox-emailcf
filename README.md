@@ -126,16 +126,17 @@ diurus otomatis: update sistem, pasang dependensi dasar, pasang
 **Docker + Docker Compose**, lalu build & jalankan container di background.
 
 ```bash
-git clone <repo-url> inbox-emailcf && cd inbox-emailcf
+git clone https://github.com/Rayzell25/Inbox-emailcf.git inbox-emailcf && cd inbox-emailcf
 bash install.sh
 ```
 
 Yang dilakukan `install.sh`:
 1. `apt update` & `apt upgrade`
 2. pasang `curl`, `git`, `nano`, `ca-certificates`
-3. pasang Docker Engine + Docker Compose plugin
-4. buat `.env` dari `.env.example` (bila belum ada)
-5. `docker compose up -d --build` (jalan di background)
+3. pasang **Node.js + npm** (untuk deploy Email Worker via `npx wrangler`)
+4. pasang Docker Engine + Docker Compose plugin
+5. buat `.env` dari `.env.example` (bila belum ada)
+6. `docker compose up -d --build` (jalan di background)
 
 Setelah selesai, app langsung jalan dalam **mode demo**. Lalu isi kredensial:
 
@@ -150,7 +151,7 @@ docker compose up -d --force-recreate    # muat ulang nilai .env
 ### Opsi B — Docker manual
 
 ```bash
-git clone <repo-url> inbox-emailcf && cd inbox-emailcf
+git clone https://github.com/Rayzell25/Inbox-emailcf.git inbox-emailcf && cd inbox-emailcf
 cp .env.example .env && nano .env        # isi kredensial
 docker compose up -d --build
 ```
