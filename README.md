@@ -133,9 +133,10 @@ bash install.sh
 Yang dilakukan `install.sh`:
 1. `apt update` & `apt upgrade`
 2. pasang `curl`, `git`, `nano`, `ca-certificates`
-3. pasang Docker Engine + Docker Compose plugin
-4. buat `.env` dari `.env.example` (bila belum ada)
-5. `docker compose up -d --build` (jalan di background)
+3. pasang **Node.js + npm** (untuk deploy Email Worker via `npx wrangler`)
+4. pasang Docker Engine + Docker Compose plugin
+5. buat `.env` dari `.env.example` (bila belum ada)
+6. `docker compose up -d --build` (jalan di background)
 
 Setelah selesai, app langsung jalan dalam **mode demo**. Lalu isi kredensial:
 
