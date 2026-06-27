@@ -1,0 +1,14 @@
+# =====================================================================
+#  Caddy reverse proxy untuk Cloudflare Single Email Viewer
+# ---------------------------------------------------------------------
+#  Domain diambil dari variabel WEB_DOMAIN di .env. Caddy otomatis
+#  menerbitkan & memperbarui sertifikat HTTPS (Let's Encrypt) selama:
+#    - WEB_DOMAIN sudah di-pointing (A/AAAA record) ke IP VPS ini, dan
+#    - port 80 & 443 terbuka di firewall.
+#  Jalankan dengan profil proxy:  docker compose --profile proxy up -d
+# =====================================================================
+
+{$WEB_DOMAIN} {
+	encode zstd gzip
+	reverse_proxy bot:3000
+}

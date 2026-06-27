@@ -13,3 +13,27 @@ services:
       - "${PORT:-3000}:3000"
     environment:
       - PORT=3000
+
+  caddy:
+    # Optional reverse proxy with automatic HTTPS (Let's Encrypt).
+    # Only runs when explicitly enabled:  docker compose --profile proxy up -d
+    # Set WEB_DOMAIN in .env first (and point its DNS A record to this VPS).
+    image: caddy:2-alpine
+    container_name: inbox-caddy
+    restart: unless-stopped
+    profiles: ["proxy"]
+    depends_on:
+      - bot
+    env_file:
+      - .env
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+
+volumes:
+  caddy_data:
+  caddy_config:

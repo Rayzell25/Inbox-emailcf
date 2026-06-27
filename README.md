@@ -171,6 +171,28 @@ pm2 start server.js --name inbox-emailcf && pm2 save
 
 Letakkan di belakang Nginx/Caddy untuk HTTPS (reverse proxy ke `PORT`).
 
+### Akses lewat domain + HTTPS otomatis (Caddy)
+
+Sudah disertakan reverse proxy **Caddy** (HTTPS otomatis dari Let's Encrypt).
+Tidak aktif secara default — jalankan hanya bila kamu mau akses lewat domain.
+
+Prasyarat:
+- A record domain (mis. `inbox.domainanda.com`) sudah mengarah ke IP VPS.
+- Port **80** & **443** terbuka di firewall (`ufw allow 80,443/tcp`).
+
+Langkah:
+```bash
+nano .env
+# isi: WEB_DOMAIN="inbox.domainanda.com"
+docker compose --profile proxy up -d
+```
+
+Setelah itu app bisa diakses di **`https://inbox.domainanda.com`** (tanpa `:3000`),
+sertifikat HTTPS terbit otomatis. Mengganti domain cukup edit `WEB_DOMAIN` di
+`.env` lalu jalankan ulang perintah `--profile proxy` di atas.
+
+> Tanpa Caddy, app tetap bisa diakses langsung di `http://IP-VPS:3000`.
+
 ---
 
 ## 6. Endpoint API
