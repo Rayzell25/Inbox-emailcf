@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#0b0613" />
+    <meta name="description" content="Pengecek 1 email terbaru dari domain kustom Cloudflare." />
+    <meta name="referrer" content="no-referrer" />
+    <title>Inbox Viewer</title>
+
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%E2%9C%89%EF%B8%8F%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://esm.sh" crossorigin />
+    <link rel="stylesheet" href="/styles.css" />
+
+    <!-- Three.js is loaded in the browser from a CDN (no install needed). -->
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "https://esm.sh/three@0.160.0"
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <!-- 3D / fallback animated background -->
+    <canvas id="bg-canvas" aria-hidden="true"></canvas>
+    <div id="bg-fallback" aria-hidden="true"></div>
+    <div class="vignette" aria-hidden="true"></div>
+
+    <main class="stage" id="stage">
+      <!-- PHASE 1: Landing + input -->
+      <section class="hero" id="hero" aria-label="Halaman utama">
+        <p class="eyebrow" id="eyebrow">CLOUDFLARE INBOX</p>
+        <h1 class="title" id="site-title">Inbox Viewer</h1>
+        <p class="subtitle">
+          Lihat <strong>satu pesan masuk terbaru</strong> dari domain kustom Anda.
+        </p>
+
+        <form class="glass-card input-card" id="email-form" autocomplete="off" novalidate>
+          <label class="field-label" for="email-input">Alamat email</label>
+          <div class="field-row">
+            <span class="field-icon" aria-hidden="true">@</span>
+            <input
+              id="email-input"
+              name="email"
+              type="email"
+              inputmode="email"
+              spellcheck="false"
+              placeholder="admin@domainanda.com"
+              aria-label="Alamat email yang ingin dicek"
+              required
+            />
+          </div>
+          <button class="btn-primary" id="submit-btn" type="submit">
+            <span class="btn-label">Submit</span>
+            <span class="btn-spinner" aria-hidden="true"></span>
+          </button>
+          <p class="form-error" id="form-error" role="alert" hidden></p>
+        </form>
+      </section>
+
+      <!-- PHASE 2: Single email panel -->
+      <section class="inbox" id="inbox" aria-label="Email terbaru" hidden>
+        <div class="glass-card email-card" id="email-card">
+          <header class="email-head">
+            <div class="avatar" id="email-avatar" aria-hidden="true">?</div>
+            <div class="email-head-main">
+              <div class="email-from" id="email-from">—</div>
+              <div class="email-address" id="email-address">—</div>
+            </div>
+            <time class="email-time" id="email-time" datetime="">—</time>
+          </header>
+
+          <h2 class="email-subject" id="email-subject">—</h2>
+
+          <div class="email-body" id="email-body">
+            <!-- email content injected here (sandboxed iframe for HTML) -->
+          </div>
+
+          <div class="email-empty" id="email-empty" hidden>
+            <div class="email-empty-icon" aria-hidden="true">📭</div>
+            <p>No new messages</p>
+          </div>
+        </div>
+
+        <div class="inbox-actions">
+          <button class="btn-ghost" id="back-btn" type="button">← Ganti email</button>
+          <button class="btn-refresh" id="refresh-btn" type="button">
+            <span class="refresh-icon" aria-hidden="true">⟳</span>
+            <span class="refresh-label">Refresh Data</span>
+          </button>
+        </div>
+        <p class="checked-for" id="checked-for"></p>
+      </section>
+    </main>
+
+    <!-- Toast notifications -->
+    <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+    <footer class="credit" id="credit"></footer>
+
+    <script type="module" src="/background.js"></script>
+    <script src="/app.js" defer></script>
+  </body>
+</html>

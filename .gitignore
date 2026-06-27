@@ -1,0 +1,18 @@
+# Secrets & local config
+.env
+.env.local
+*.local
+
+# Dependencies (none at runtime, but worker uses them)
+node_modules/
+worker/node_modules/
+
+# Wrangler / Cloudflare
+worker/.wrangler/
+.dev.vars
+
+# Logs & OS junk
+*.log
+npm-debug.log*
+.DS_Store
+Thumbs.db
