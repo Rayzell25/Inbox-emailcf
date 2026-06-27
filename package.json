@@ -1,0 +1,26 @@
+{
+  "name": "cloudflare-single-email-viewer",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Premium 3D web app that shows the single latest inbox email of a Cloudflare custom-domain address. Zero runtime dependencies.",
+  "type": "commonjs",
+  "main": "server.js",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "start": "node server.js",
+    "check": "node test/check.js",
+    "smoke": "node test/smoke.js",
+    "test": "node test/check.js && node test/smoke.js"
+  },
+  "keywords": [
+    "cloudflare",
+    "email-routing",
+    "email-worker",
+    "kv",
+    "threejs",
+    "vps"
+  ],
+  "license": "MIT"
+}

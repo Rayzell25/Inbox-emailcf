@@ -1,0 +1,15 @@
+services:
+  bot:
+    # The web app container. Named "bot" for consistency with other
+    # deployments; it is an HTTP web server, not a chat bot.
+    build: .
+    image: inbox-emailcf:latest
+    container_name: inbox-emailcf
+    restart: unless-stopped
+    # Reads secrets & branding from .env (edit on the VPS with `nano .env`).
+    env_file:
+      - .env
+    ports:
+      - "${PORT:-3000}:3000"
+    environment:
+      - PORT=3000

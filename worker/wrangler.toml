@@ -1,0 +1,29 @@
+#:schema node_modules/wrangler/config-schema.json
+# Wrangler config for the Email Worker that stores incoming mail into KV.
+#
+# Quick start:
+#   1) cd worker && npm install
+#   2) npx wrangler kv namespace create INBOX_KV
+#      -> copy the printed "id" into the [[kv_namespaces]] block below,
+#         and also into the VPS .env as CLOUDFLARE_KV_NAMESPACE_ID.
+#   3) npx wrangler deploy
+#   4) Cloudflare Dashboard -> your domain -> Email -> Email Routing
+#      -> create a rule (or catch-all) with action "Send to a Worker"
+#         and pick this Worker (inbox-email-worker).
+
+name = "inbox-email-worker"
+main = "email-worker.js"
+compatibility_date = "2024-11-01"
+
+# KV namespace that holds captured emails. Replace <KV_NAMESPACE_ID>
+# with the id returned by `wrangler kv namespace create INBOX_KV`.
+[[kv_namespaces]]
+binding = "INBOX_KV"
+id = "<KV_NAMESPACE_ID>"
+
+[vars]
+# Optional: also forward incoming mail to a verified destination address
+# so normal delivery to your mailbox continues. Leave empty to disable.
+FORWARD_TO = ""
+# Optional: how long (seconds) to keep history entries. Default 14 days.
+HISTORY_TTL = "1209600"
