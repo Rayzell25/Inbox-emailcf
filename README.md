@@ -119,7 +119,35 @@ Setelah ini, setiap email masuk akan tersimpan di KV dan muncul di aplikasi.
 
 ## 5. Deploy di VPS
 
-### Opsi A — Docker (disarankan)
+### Opsi A — Otomatis dengan `install.sh` (paling mudah)
+
+Untuk VPS Ubuntu/Debian yang masih kosong. Satu perintah, semuanya
+diurus otomatis: update sistem, pasang dependensi dasar, pasang
+**Docker + Docker Compose**, lalu build & jalankan container di background.
+
+```bash
+git clone <repo-url> inbox-emailcf && cd inbox-emailcf
+bash install.sh
+```
+
+Yang dilakukan `install.sh`:
+1. `apt update` & `apt upgrade`
+2. pasang `curl`, `git`, `nano`, `ca-certificates`
+3. pasang Docker Engine + Docker Compose plugin
+4. buat `.env` dari `.env.example` (bila belum ada)
+5. `docker compose up -d --build` (jalan di background)
+
+Setelah selesai, app langsung jalan dalam **mode demo**. Lalu isi kredensial:
+
+```bash
+nano .env                                # isi token & branding
+docker compose up -d --force-recreate    # muat ulang nilai .env
+```
+
+> Script aman dijalankan ulang (idempoten) dan otomatis pakai `sudo`
+> bila Anda bukan root.
+
+### Opsi B — Docker manual
 
 ```bash
 git clone <repo-url> inbox-emailcf && cd inbox-emailcf
@@ -131,7 +159,7 @@ docker compose up -d --build
 > `docker compose up -d --force-recreate` — `restart` biasa **tidak**
 > memuat ulang nilai `.env` yang berubah.
 
-### Opsi B — Node langsung / PM2
+### Opsi C — Node langsung / PM2
 
 ```bash
 nano .env
@@ -188,6 +216,7 @@ Token Cloudflare **tidak pernah** diekspos ke `/api/config` atau ke browser.
 ├── test/
 │   ├── check.js           # cek sintaks
 │   └── smoke.js           # uji alur penuh (offline)
+├── install.sh             # installer otomatis VPS (Docker + run)
 ├── Dockerfile
 ├── docker-compose.yml
 └── .env.example
