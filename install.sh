@@ -93,15 +93,17 @@ install_node() {
   if command -v node >/dev/null 2>&1; then
     local major
     major="$(node -v 2>/dev/null | sed -E 's/^v([0-9]+).*/\1/')"
-    if [ -n "${major:-}" ] && [ "$major" -ge 18 ]; then
+    if [ -n "${major:-}" ] && [ "$major" -ge 20 ]; then
       need=0
       ok "Node.js sudah terpasang ($(node -v), npm $(npm -v 2>/dev/null || echo '?'))"
     else
-      warn "Node.js versi lama terdeteksi ($(node -v)); memasang Node 20."
+      warn "Node.js versi lama terdeteksi ($(node -v)); memasang Node 22."
     fi
   fi
   if [ "$need" -eq 1 ]; then
-    curl -fsSL https://deb.nodesource.com/setup_20.x -o /tmp/nodesource_setup.sh
+    # Hindari konflik dengan paket nodejs/npm bawaan distro (Node lama).
+    $SUDO apt-get remove -y npm nodejs libnode-dev >/dev/null 2>&1 || true
+    curl -fsSL https://deb.nodesource.com/setup_22.x -o /tmp/nodesource_setup.sh
     $SUDO bash /tmp/nodesource_setup.sh
     rm -f /tmp/nodesource_setup.sh
     $SUDO apt-get install -y nodejs
