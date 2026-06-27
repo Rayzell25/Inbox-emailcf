@@ -126,7 +126,7 @@ diurus otomatis: update sistem, pasang dependensi dasar, pasang
 **Docker + Docker Compose**, lalu build & jalankan container di background.
 
 ```bash
-git clone <repo-url> inbox-emailcf && cd inbox-emailcf
+git clone https://github.com/Rayzell25/Inbox-emailcf.git inbox-emailcf && cd inbox-emailcf
 bash install.sh
 ```
 
@@ -150,7 +150,7 @@ docker compose up -d --force-recreate    # muat ulang nilai .env
 ### Opsi B — Docker manual
 
 ```bash
-git clone <repo-url> inbox-emailcf && cd inbox-emailcf
+git clone https://github.com/Rayzell25/Inbox-emailcf.git inbox-emailcf && cd inbox-emailcf
 cp .env.example .env && nano .env        # isi kredensial
 docker compose up -d --build
 ```
